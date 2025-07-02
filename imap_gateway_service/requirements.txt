@@ -1,0 +1,8 @@
+# This is the requirements file for the IMAP Gateway Service.
+# For now, it's empty as we are only using built-in Python libraries (asyncio, logging).
+# We will add dependencies here as needed (e.g., linters, testing frameworks, or other libraries).
+
+# Example for linters (can be uncommented and installed in a virtual environment):
+# flake8
+# black
+# mypy
