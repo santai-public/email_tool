@@ -1,0 +1,1 @@
+"""IMAP MCP Server package."""
