@@ -1,1 +1,12 @@
-from abc import ABC, abstractmethod\nfrom typing import Dict, Any\n\nclass BaseProcessor(ABC):\n    @abstractmethod\n    async def process(self, message_data: Dict[str, Any]) -> Dict[str, Any]:\n        \"\"\"\n        Processes the email message data.\n        message_data is a dictionary containing message content and metadata.\n        Returns the modified message_data.\n        \"\"\"\n        pass\n
+from abc import ABC, abstractmethod
+from typing import Dict, Any
+
+class BaseProcessor(ABC):
+    @abstractmethod
+    async def process(self, message_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Processes the email message data.
+        message_data is a dictionary containing message content and metadata.
+        Returns the modified message_data.
+        """
+        pass
