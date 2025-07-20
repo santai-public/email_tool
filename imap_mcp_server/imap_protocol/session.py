@@ -208,7 +208,7 @@ class IMAPSession:
         # A real IMAP server needs to handle literal parsing carefully.
         message_content_str = args[-1] # This is a simplification
 
-        # Check if the message content is a literal (e.g., {123}\r\nmessage_data)
+        # Check if the message content is provided as a literal (e.g., {123}\r\nmessage_data)
         # This basic parser doesn't fully handle literals, so we'll look for a common pattern.
         match = re.match(r'\{(\d+)\}', message_content_str)
         if match:
@@ -216,8 +216,8 @@ class IMAPSession:
             # Send continuation request for literal
             await self.send_response(b"+\r\n")
             # Read the exact number of bytes for the literal
-            message_content_bytes = await self.reader.readexactly(size + 2) # +2 for CRLF
-            message_content = message_content_bytes[:-2] # Remove CRLF
+            message_content_bytes = await self.reader.readexactly(size + 2)  # +2 for CRLF
+            message_content = message_content_bytes[:-2]  # Remove CRLF
         else:
             # If not a literal, assume it's directly provided (less common for full messages)
             message_content = message_content_str.encode('utf-8')
@@ -262,7 +262,7 @@ class IMAPSession:
                 content = message_data.get("content", b"")
                 response_parts.append(f"BODY[] {{{len(content)}}}")
                 await self.send_response(IMAPResponseSerializer.untagged_ok(f"FETCH {uid} ({ ' '.join(response_parts) })"))
-                self.writer.write(content + b"\r\n") # Send literal content
+                self.writer.write(content + b"\r\n")  # Send literal content
                 await self.writer.drain()
             elif fetch_item == "UID":
                 response_parts.append(f"UID {uid}")

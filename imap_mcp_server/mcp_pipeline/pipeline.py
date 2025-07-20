@@ -1,1 +1,35 @@
-import importlib\nimport logging\nfrom typing import List, Dict, Any\nfrom .processors.base_processor import BaseProcessor\n\nlogger = logging.getLogger(__name__)\n\nclass MCPPipeline:\n    def __init__(self, processor_configs: List[Dict[str, Any]] = None):\n        self.processors: List[BaseProcessor] = []\n        if processor_configs:\n            for config in processor_configs:\n                try:\n                    processor_name = config["name"]\n                    module_path = f"imap_mcp_server.mcp_pipeline.processors.{processor_name.lower()}"\n                    module = importlib.import_module(module_path)\n                    processor_class = getattr(module, processor_name)\n                    processor_instance = processor_class(**config.get("params", {}))\n                    self.processors.append(processor_instance)\n                    logger.info(f"Loaded MCP processor: {processor_name}")\n                except Exception as e:\n                    logger.error(f"Failed to load MCP processor {config.get("name", "Unknown")}: {e}")\n\n    async def process_message(self, message_data: Dict[str, Any]) -> Dict[str, Any]:\n        processed_data = message_data\n        for processor in self.processors:\n            try:\n                processed_data = await processor.process(processed_data)\n                logger.debug(f"Message processed by {processor.__class__.__name__}")\n            except Exception as e:\n                logger.error(f"Error processing message with {processor.__class__.__name__}: {e}")\n                # Depending on policy, might re-raise or continue with original data\n        return processed_data\n
+import importlib
+import logging
+from typing import List, Dict, Any
+from .processors.base_processor import BaseProcessor
+
+logger = logging.getLogger(__name__)
+
+class MCPPipeline:
+    def __init__(self, processor_configs: List[Dict[str, Any]] = None):
+        self.processors: List[BaseProcessor] = []
+        if processor_configs:
+            for config in processor_configs:
+                try:
+                    processor_name = config["name"]
+                    module_path = f"imap_mcp_server.mcp_pipeline.processors.{processor_name.lower()}"
+                    module = importlib.import_module(module_path)
+                    processor_class = getattr(module, processor_name)
+                    processor_instance = processor_class(**config.get("params", {}))
+                    self.processors.append(processor_instance)
+                    logger.info(f"Loaded MCP processor: {processor_name}")
+                except Exception as e:
+                    logger.error(
+                        f"Failed to load MCP processor {config.get('name', 'Unknown')}: {e}"
+                    )
+
+    async def process_message(self, message_data: Dict[str, Any]) -> Dict[str, Any]:
+        processed_data = message_data
+        for processor in self.processors:
+            try:
+                processed_data = await processor.process(processed_data)
+                logger.debug(f"Message processed by {processor.__class__.__name__}")
+            except Exception as e:
+                logger.error(f"Error processing message with {processor.__class__.__name__}: {e}")
+                # Depending on policy, might re-raise or continue with original data
+        return processed_data

@@ -1,1 +1,16 @@
-from typing import Dict, Type\nfrom .backends import AuthBackend, PlainAuthBackend\n\nclass AuthManager:\n    def __init__(self):\n        self._backends: Dict[str, AuthBackend] = {}\n        self.register_backend("PLAIN", PlainAuthBackend())\n\n    def register_backend(self, name: str, backend: AuthBackend):\n        self._backends[name.upper()] = backend\n\n    async def authenticate(self, mechanism: str, username: str, password: str) -> bool:\n        backend = self._backends.get(mechanism.upper())\n        if not backend:\n            return False\n        return await backend.authenticate(username, password)\n
+from typing import Dict, Type
+from .backends import AuthBackend, PlainAuthBackend
+
+class AuthManager:
+    def __init__(self):
+        self._backends: Dict[str, AuthBackend] = {}
+        self.register_backend("PLAIN", PlainAuthBackend())
+
+    def register_backend(self, name: str, backend: AuthBackend):
+        self._backends[name.upper()] = backend
+
+    async def authenticate(self, mechanism: str, username: str, password: str) -> bool:
+        backend = self._backends.get(mechanism.upper())
+        if not backend:
+            return False
+        return await backend.authenticate(username, password)
