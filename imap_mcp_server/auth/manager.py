@@ -1,4 +1,7 @@
-from typing import Dict
+
+
+from typing import Dict, Type
+
 from .backends import AuthBackend, PlainAuthBackend
 
 class AuthManager:
