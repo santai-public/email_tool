@@ -237,6 +237,10 @@ Interfaces for administration and automation.
         *   Tenant Management (CRUD, quotas, branding).
         *   Webhook Subscriptions (CRUD).
 
+    *   Example implementation: see `api_server.py` for a minimal FastAPI
+        service that validates an `X-API-Key` header against a PostgreSQL
+        `api_keys` table. Only keys marked as `active` are accepted.
+
 *   **B. Admin Web UI (SPA via Admin Web UI Service):**
     *   RBAC-driven visibility/accessibility.
     *   **Key Sections/Dashboards:**
