@@ -316,3 +316,30 @@ Toolkit for importing data from existing IMAP servers.
 *   **D. Target Common IMAP Servers:** Dovecot, Cyrus, Exchange, Gmail, Office 365.
 ---
 This document provides a comprehensive overview of the planned architecture. Each section would require further detailed design and specification during the implementation phases.
+
+## Email Providers
+
+The `email_sender.py` module offers a simple utility for sending mail through either Amazon SES or an IMAP server. Choose the provider when creating an `EmailSender` instance:
+
+```python
+from email_sender import EmailSender
+
+# Using Amazon SES
+ses_sender = EmailSender(
+    provider="ses",
+    region_name="us-east-1",
+)
+ses_sender.send_email("from@example.com", ["to@example.com"], "Subject", "Body")
+
+# Using an IMAP server
+imap_sender = EmailSender(
+    provider="imap",
+    server="imap.example.com",
+    username="user",
+    password="pass",
+    mailbox="INBOX",
+)
+imap_sender.send_email("from@example.com", ["to@example.com"], "Subject", "Body")
+```
+
+The IMAP option appends the message to the specified mailbox, while the SES option sends mail using the configured AWS region.
